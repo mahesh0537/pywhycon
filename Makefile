@@ -37,12 +37,19 @@ LIB_HEADER_FILES:= $(wildcard $(LIB_HEADER_DIR)/*.h)
 LIB_OBJ_FILES	:= $(patsubst $(LIB_CPP_DIR)/%.cpp, $(LIB_BUILD_DIR)/%.o, $(LIB_CPP_FILES))
 
 # OpenCV flags for given instalation of python
-OPENCV_FLAGS_ESCAPED  	:= $(shell python opencv_cflags_libs.py)
-OPENCV_CXXFLAGS 		:= $(subst *, ,$(word 1,$(OPENCV_FLAGS_ESCAPED)))
-OPENCV_LIBS 			:= $(subst *, ,$(word 2,$(OPENCV_FLAGS_ESCAPED)))
-OPENCV_NAME 			:= $(subst *, ,$(word 3,$(OPENCV_FLAGS_ESCAPED)))
-OPENCV_VERSION 			:= $(subst *, ,$(word 4,$(OPENCV_FLAGS_ESCAPED)))
-export PKG_CONFIG_PATH	:= $(subst *, ,$(word 5,$(OPENCV_FLAGS_ESCAPED)))
+# OPENCV_FLAGS_ESCAPED  	:= $(shell python opencv_cflags_libs.py)
+# OPENCV_CXXFLAGS 		:= $(subst *, ,$(word 1,$(OPENCV_FLAGS_ESCAPED)))
+# OPENCV_LIBS 			:= $(subst *, ,$(word 2,$(OPENCV_FLAGS_ESCAPED)))
+# OPENCV_NAME 			:= $(subst *, ,$(word 3,$(OPENCV_FLAGS_ESCAPED)))
+# OPENCV_VERSION 			:= $(subst *, ,$(word 4,$(OPENCV_FLAGS_ESCAPED)))
+# export PKG_CONFIG_PATH	:= $(subst *, ,$(word 5,$(OPENCV_FLAGS_ESCAPED)))
+
+# OPENCV_FLAGS_ESCAPED  	:= $(shell python opencv_cflags_libs.py)
+OPENCV_CXXFLAGS 		:= `pkg-config --cflags opencv4`
+OPENCV_LIBS 			:= `pkg-config --libs opencv4`
+OPENCV_NAME 			:= opencv4
+OPENCV_VERSION 			:=4.5.5
+# export PKG_CONFIG_PATH	:= $(subst *, ,$(word 5,$(OPENCV_FLAGS_ESCAPED)))
 
 # Pythons flags
 PYTHON_CXXFLAGS 	:= $(shell python3-config --cflags)

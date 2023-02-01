@@ -21,11 +21,12 @@ import subprocess
 # Sigleton
 class OpenCV_params:
 
-    OPENCV_MASK_RE = re.compile(r'(opencv[^\.]*)\.pc')  # opencv4.pc  or opencv.pc
+    OPENCV_MASK_RE = re.compile(r'(opencv[^\.]*)') #'/usr/include/opencv4/opencv2'     #re.compile(r'(opencv[^\.]*)\.pc')  # opencv4.pc  or opencv.pc
     HOME_DIR = os.path.expanduser('~')
 
     def __init__(self):
-        found_paskages = self._find_in_tree(root=os.path.dirname(cv2.__file__))
+        found_paskages = self._find_in_tree('/usr/include/opencv4/opencv2')     #self._find_in_tree(root=os.path.dirname(cv2.__file__))
+        print(os.path.dirname(cv2.__file__))
         if found_paskages:
             PKG_CONFIG_PATH = found_paskages[0][1]
             self._pkg_config_name = found_paskages[0][0]
@@ -49,7 +50,7 @@ class OpenCV_params:
     def pkg_config_path(self) -> str:
         return self._pkg_config_path
 
-    def _find_in_dir_python(self, root_dir: str, exclude_dirs: []) -> [(str, str)]:
+    def _find_in_dir_python(self, root_dir: str, exclude_dirs):
         mask_re = self.OPENCV_MASK_RE
         for root, dirs, files in os.walk(root_dir):
             # print('>', root, dirs, files)
@@ -64,7 +65,7 @@ class OpenCV_params:
                     return found_files
         return []
 
-    def _find_in_dir_shell(self, root_dir: str, exclude_dir: str = '') -> [(str, str)]:
+    def _find_in_dir_shell(self, root_dir: str, exclude_dir: str = ''):
         mask_re = self.OPENCV_MASK_RE
         mask: str = 'opencv*.pc'
         command = fr'find {root_dir} -name "{mask}"'
@@ -82,7 +83,7 @@ class OpenCV_params:
             return []
         return [(mask_re.search(os.path.basename(f))[1], os.path.dirname(f))for f in found_list]
 
-    def _find_in_dir(self, root_dir: str, exclude_dirs: []) -> [(str, str)]:
+    def _find_in_dir(self, root_dir: str, exclude_dirs):
         '''
         Try it quickly by shell. If it failed, try it by python.
         '''
@@ -96,7 +97,7 @@ class OpenCV_params:
             return self._find_in_dir_python(root_dir=root_dir, exclude_dirs=exclude_dirs)
 
 
-    def _find_in_tree(self, root:str = os.path.dirname(cv2.__file__)) -> [(str, str)]:
+    def _find_in_tree(self, root:str = os.path.dirname(cv2.__file__)):
         exclude_dirs = []
         while True:
             if root == os.path.sep or root == self.HOME_DIR:
